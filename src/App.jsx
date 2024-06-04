@@ -1,22 +1,58 @@
-import { useState } from 'react'
+import { useState } from "react"
+import Header from "./components/Header"
+import Guitar from "./components/Guitar"
+import { db } from "./data/db"
+
+
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const [data, setData] = useState(db)
+  const [cart, setCart] = useState([])
+
+  function addToCart(item) {
+
+    const itemExists = cart.findIndex((guitar) => guitar.id === item.id)
+    if (itemExists >= 0) {
+      const updatedCart = [...cart]
+      updatedCart[itemExists].quantity++
+      setCart(updatedCart)
+    } else {
+      item.quantity = 1
+      setCart([...cart, item])
+    }
+  }
 
   return (
     <>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+
+      <Header />
+
+      <main className="container-xl mt-5">
+        <h2 className="text-center">Nuestra Colección</h2>
+
+        <div className="row mt-5">
+          {data.map((guitar) =>
+            <Guitar
+              key={guitar.id}
+              guitar={guitar}
+              setCart={setCart}
+              addToCart={addToCart}
+            />
+
+
+          )}
+
+        </div>
+      </main>
+
+
+      <footer className="bg-dark mt-5 py-5">
+        <div className="container-xl">
+          <p className="text-white text-center fs-4 mt-4 m-md-0">GuitarLA - Todos los derechos Reservados</p>
+        </div>
+      </footer>
+
     </>
   )
 }
